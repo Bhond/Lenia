@@ -14,7 +14,6 @@ VC::~VC()
 	delete resetButton;
 	delete scaleWidthField;
 	delete scaleHeightField;
-	delete tabWidget;
 }
 
 void VC::onInit()
@@ -27,8 +26,8 @@ void VC::onInit()
 	float anchorY = 0;
 	float margin = 10;
 
-	float controlContainerWidth = Width / 4;
-	float controlContainerHeight = Height - 2 * anchorY;
+	float controlContainerWidth = Width / 4.0;
+	float controlContainerHeight = Height - 2.0 * anchorY;
 
 	// Position
 	float posX = anchorX + controlContainerWidth + margin;
@@ -36,15 +35,8 @@ void VC::onInit()
 	float simWidth = Width - posX - anchorX;
 	float simHeight = controlContainerHeight;
 
-	// Tab
-	tabWidget = new QTabWidget(this);
-	tabWidget->move(QPoint(posX, posY));
-	tabWidget->resize(QSize(simWidth, simHeight));
-
 	// Simulation
-	simulationFrame = new QFrame();
-	simulationFrame->resize(QSize(simWidth, simHeight));
-	simulation = new Simulation(simulationFrame, QPoint(0, 0), QSize(simWidth, simHeight), 1);
+	simulation = new Simulation(this, QPoint(posX, posY), QSize(simWidth, simHeight), 1);
 	simulation->show();
 
 	// Controls
@@ -81,9 +73,6 @@ void VC::onInit()
 	scaleHeightField->move(QPoint(scaleHeightFieldX, controlsY));
 	connect(scaleHeightField, SIGNAL(valueChanged()), this, SLOT(onScaleHeightFieldValueChanged()));*/
 
-	// Add widgets to tab
-	tabWidget->addTab(simulationFrame, "Simulation");
-
 	// Connect the buttons
 	connect(playButton, SIGNAL(clicked()), simulation, SLOT(play()));
 	connect(pauseButton, SIGNAL(clicked()), simulation, SLOT(pause()));
@@ -91,7 +80,7 @@ void VC::onInit()
 
 void VC::display()
 {
-	this->show();
+	show();
 }
 
 void VC::onScaleWidthFieldValueChanged()

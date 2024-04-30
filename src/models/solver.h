@@ -31,5 +31,6 @@ public:
 private:
 	void init();
 	void readConfiguration();
+	std::vector<int> findNeighbours(const int& cellIdx);
 
 };

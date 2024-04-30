@@ -25,6 +25,9 @@ void Simulation::onInit()
     Background.setFillColor(BackgroundColor);
 
     solver = new Solver(this);
+    solver->width = width();
+    solver->height = height();
+    geometryDirty = true;
 }
 
 void Simulation::onScroll(const double& amt)
@@ -42,42 +45,66 @@ void Simulation::mousePressEvent(QMouseEvent* event)
 void Simulation::resizeEvent(QResizeEvent* event)
 {
     // Resize grid
-    solver->width = width();
-    solver->height = height();
-    gridLinesDirty = true;
+    if (solver) 
+    {
+        solver->width = width();
+        solver->height = height();
+        geometryDirty = true;
+    }    
 }
 
-void Simulation::buildGridLines()
+void Simulation::buildGeometry()
 {
-    // Reset
-    gridLines.clear();
+    // Init
+    int stepX = width() / solver->gridWidth;
+    int stepY = height() / solver->gridHeight;
 
-    // Vertical lines
-    double step = width() / ((double)solver->gridWidth);
-    for (int i = 0; i < solver->gridWidth - 1; i++)
+    // Grid lines
+    if (drawGridLines)
     {
-        sf::Vector2f pos(gridLinesThickness, solver->height);
-        sf::RectangleShape rec(pos);
-        rec.move(i * step + step, 0.0);
-        gridLines.push_back(rec);
+        gridLines.clear();
+        // Vertical lines
+        for (int i = 0; i < solver->gridWidth - 1; i++)
+        {
+            sf::Vector2f size(gridLinesThickness, solver->height);
+            sf::RectangleShape rec(size);
+            rec.move(i * stepX + stepX, 0.0);
+            gridLines.push_back(rec);
+        }
+
+        // Horizontal lines
+        for (int i = 0; i < solver->gridHeight - 1; i++)
+        {
+            sf::Vector2f size(solver->width, gridLinesThickness);
+            sf::RectangleShape rec(size);
+            rec.move(0.0, i * stepY + stepY);
+            gridLines.push_back(rec);
+        }
     }
     
-    // Horizontal lines
-    step = height() / ((double)solver->gridHeight);
-    for (int i = 0; i < solver->gridHeight - 1; i++)
+    // Cells
+    cells.clear();
+    int nbCells = solver->gridHeight * solver->gridWidth;
+    for (size_t i = 0; i < nbCells; i++)
     {
-        sf::Vector2f pos(solver->height, gridLinesThickness);
-        sf::RectangleShape rec(pos);
-        rec.move(0.0, i * step + step);
-        gridLines.push_back(rec);
+        sf::Vector2f size(stepX, stepY);
+        sf::RectangleShape rec(size);
+        float x = (i % solver->gridWidth) * stepX;
+        float y = std::floor(i / solver->gridHeight) * stepY;
+        sf::Vector2f pos(x, y);
+        rec.move(pos);
+        cells.push_back(rec);
     }
+
+    // Flag
+    geometryDirty = false;
 }
 
 void Simulation::onUpdate()
 {
     if (playing)
     {
-        solver->solve(((double)myTimer.interval()) / 1000);
+        solver->solve(0.0); //((double)myTimer.interval()) / 1000
     }
     render();
 }
@@ -95,16 +122,25 @@ void Simulation::render()
     // Draw background
     draw(Background);
 
+    // Build geometry
+    if (geometryDirty)
+        buildGeometry();
+
     // Draw grid
     if (drawGridLines) // Draw lines-> add bool
     {
-        if (gridLinesDirty)
-            buildGridLines();
-
         for (auto& line : gridLines)
         {
             draw(line);
         }
+    }
+
+    // Draw cells
+    for (int i = 0; i < solver->grid.size(); i++)
+    {
+        Color c = linearGradient(1.0 - solver->grid[i]);
+        cells[i].setFillColor(sf::Color(c.r, c.g, c.b));
+        draw(cells[i]);
     }
 }
 

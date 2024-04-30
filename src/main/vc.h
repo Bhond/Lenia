@@ -16,10 +16,9 @@ class VC : public QMainWindow
 	Q_OBJECT
 
 private:
-	const float Width = 1800;
-	const float Height = 1500;
+	const float Width = 1500;
+	const float Height = 900;
 
-	QTabWidget* tabWidget{ nullptr };
 	Simulation* simulation{ nullptr };
 	QFrame* simulationFrame{ nullptr };
 	QPushButton* playButton{ nullptr };

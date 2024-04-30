@@ -29,12 +29,13 @@ private:
 	double zoomFactor { 1 };
 
 private:
-	const sf::Color BackgroundColor = sf::Color(5, 5, 10, 255);
+	const sf::Color BackgroundColor = sf::Color(0, 0, 0, 255);
 	sf::RectangleShape Background;
-	bool gridLinesDirty{ false };
-	bool drawGridLines{ true };
-	double gridLinesThickness{ 2.0 };
+	bool geometryDirty{ false };
+	bool drawGridLines{ false };
+	double gridLinesThickness{ 1.0 };
 	std::vector<sf::RectangleShape> gridLines;
+	std::vector<sf::RectangleShape> cells;
 
 public:
 	Simulation(QWidget* parent, unsigned int frameTime = 0);
@@ -56,7 +57,7 @@ protected:
 	void resizeEvent(QResizeEvent* event) override;
 
 private:
-	void buildGridLines();
+	void buildGeometry();
 
 public slots:
 	void render();
