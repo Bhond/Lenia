@@ -1,0 +1,5 @@
+#pragma once
+
+// Paths
+#cmakedefine PATH_ROOT "@PATH_ROOT@"
+#cmakedefine PATH_RESOURCES "@PATH_RESOURCES@"
