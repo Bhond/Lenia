@@ -17,6 +17,7 @@ public:
 	int gridWidth{ 10 };
 	int gridHeight{ 10 };
 	std::vector<double> grid;
+	std::vector<double> kernel;
 
 private:
 	sf::RenderWindow* renderWindow{ nullptr };
@@ -28,9 +29,13 @@ public:
 public:
 	void solve(double dt);
 
+
 private:
 	void init();
 	void readConfiguration();
-	std::vector<int> findNeighbours(const int& cellIdx);
+	double computePotential(int& i);
+	double convolve(const int& cellIdx);
+	std::vector<double> findNeighbours(const int& cellIdx, const int& kernelWidth);
+	std::vector<double> buildDonutKernel(const int& width, const int& innerRadius, const int& outerRadius);
 
 };

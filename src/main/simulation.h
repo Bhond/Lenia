@@ -23,7 +23,7 @@ public:
 private:
 	const double simulatedWidth  { 1e10 };
 	const double simulatedHeight { 1e10 };
-	const std::string Name { "ASLS" };
+	const std::string Name { "Lenia" };
 	double scaleWidth { 1 };
 	double scaleHeight { 1 };
 	double zoomFactor { 1 };

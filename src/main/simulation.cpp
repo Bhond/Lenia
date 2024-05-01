@@ -56,8 +56,10 @@ void Simulation::resizeEvent(QResizeEvent* event)
 void Simulation::buildGeometry()
 {
     // Init
-    int stepX = width() / solver->gridWidth;
-    int stepY = height() / solver->gridHeight;
+    int w = width();
+    int h = height();
+    double stepX = ((double)width()) / ((double)solver->gridWidth);
+    double stepY = ((double)height()) / ((double)solver->gridHeight);
 
     // Grid lines
     if (drawGridLines)
@@ -104,7 +106,7 @@ void Simulation::onUpdate()
 {
     if (playing)
     {
-        solver->solve(0.0); //((double)myTimer.interval()) / 1000
+        solver->solve(((double)myTimer.interval())/100);
     }
     render();
 }
@@ -136,9 +138,11 @@ void Simulation::render()
     }
 
     // Draw cells
+    int toto = std::sqrt(solver->kernel.size());
+    int inc{ 0 };
     for (int i = 0; i < solver->grid.size(); i++)
     {
-        Color c = linearGradient(1.0 - solver->grid[i]);
+        Color c = linearGradient(solver->grid[i]);
         cells[i].setFillColor(sf::Color(c.r, c.g, c.b));
         draw(cells[i]);
     }
