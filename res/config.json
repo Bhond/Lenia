@@ -2,8 +2,8 @@
   "general": {
     "grid": {
       "drawLines":  false,
-      "width":  250,
-      "height": 250
+      "width":  256,
+      "height": 256
     }
   }
 }

@@ -106,7 +106,7 @@ void Simulation::onUpdate()
 {
     if (playing)
     {
-        solver->solve(((double)myTimer.interval())/100);
+        solver->solve(((double)myTimer.interval()));
     }
     render();
 }
